@@ -14,16 +14,12 @@ class MoExServiceImpl(@Autowired val restTemplate: RestTemplate) : MoExService {
 
     override fun getMoExTickers() {
         logger.info { ">>> getMoExTickers called" }
-        try {
-            val response = restTemplate.getForObject(
-                MoexConsts.ALL_SECURITIES,
-                String::class.java
-            ) ?: return
-            val testModel = gson.fromJson(response, MoExSecuritiesResponse::class.java)
-            print(testModel.securities.data[6])
-        } catch (e: Exception) {
-            logger.error { e }
-        }
+        val response = restTemplate.getForObject(
+            MoexConsts.ALL_SECURITIES,
+            String::class.java
+        )
+        val testModel = gson.fromJson(response, MoExSecuritiesResponse::class.java)
+        print(testModel.securities.data[6])
     }
 }
 

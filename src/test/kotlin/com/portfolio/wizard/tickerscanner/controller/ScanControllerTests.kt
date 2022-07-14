@@ -2,6 +2,7 @@ package com.portfolio.wizard.tickerscanner.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import com.portfolio.wizard.tickerscanner.service.moex.MoExService
+import io.mockk.every
 import io.mockk.justRun
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -26,14 +27,23 @@ class ScanControllerTests(@Autowired val restTemplate: TestRestTemplate) {
     @Test
     fun `Assert startMOEX status code`() {
         println(">>> Assert startMOEX status code")
-        val entity = restTemplate.getForEntity("/scan/moex", Unit.javaClass)
-        assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+        val response = restTemplate.getForEntity("/scan/moex", String::class.java)
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
     fun `Verify moexService is called during scanning moex`() {
         println(">>> Verify moexService is called during scanning moex")
-        restTemplate.getForEntity("/scan/moex", String.Companion::class.java)
+        restTemplate.getForEntity("/scan/moex", String::class.java)
         verify { moexService.getMoExTickers() }
     }
+
+    @Test
+    fun `Verify INTERNAL_SERVER_ERROR is returned in case of error`() {
+        println(">>> Verify moexService return 500 code")
+        every { moexService.getMoExTickers() } throws Exception("test")
+        val response = restTemplate.getForEntity("/scan/moex", String::class.java)
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
 }
