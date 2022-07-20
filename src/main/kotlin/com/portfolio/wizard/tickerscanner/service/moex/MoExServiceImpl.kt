@@ -24,8 +24,9 @@ class MoExServiceImpl(@Autowired val restTemplate: RestTemplate, @Autowired val 
     }
 
     fun send(moexResponse: MoExSecuritiesResponse) {
-        sender.send(moexResponse.securities.data[0][0])
-        moexResponse.securities.data.forEach{ println(it) }
+        moexResponse.securities.data.forEach{
+            sender.send(it[0])
+        }
     }
 }
 
