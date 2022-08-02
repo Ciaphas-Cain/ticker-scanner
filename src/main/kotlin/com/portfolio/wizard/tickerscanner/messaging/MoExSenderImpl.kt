@@ -11,6 +11,6 @@ class MoExSenderImpl(@Autowired var rabbitTemplate: RabbitTemplate): MoExSender 
     private val logger = KotlinLogging.logger {}
     override fun send(ticker: String) {
         rabbitTemplate.convertAndSend(MoexConsts.QUEUE_NAME, ticker)
-        logger.info{" Sent '$ticker' to '$MoexConsts.QUEUE_NAME'"}
+        logger.info{" Sent '$ticker' to '${MoexConsts.QUEUE_NAME}'"}
     }
 }
